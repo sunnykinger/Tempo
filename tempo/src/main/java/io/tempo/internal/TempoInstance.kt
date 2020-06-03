@@ -143,7 +143,7 @@ internal class TempoInstance(
         fun isCacheValid(cache: TimeSourceCache): Boolean {
             val estimatedBootTime = deviceClocks.estimatedBootTime()
             val cacheEstimatedBootTime = cache.estimatedBootTime
-            return Math.abs(cacheEstimatedBootTime - estimatedBootTime) <= 5000L
+            return Math.abs(cacheEstimatedBootTime - estimatedBootTime) <= 50000L
         }
 
         timeSources
