@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion androidConfig.compileSdkVersion
@@ -20,12 +19,21 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    buildFeatures {
+        viewBinding true
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    namespace 'io.tempo.sample'
 }
 
+
 dependencies {
-    implementation project(':tempo')
-    implementation project(':tempo-android-workmanager-scheduler')
-    implementation project(':tempo-android-gps-time-source')
+    implementation(project(':tempo'))
+    implementation(project(':tempo-android-workmanager-scheduler'))
+    implementation(project(':tempo-android-gps-time-source'))
     implementation depPaths.kotlinStd
     implementation depPaths.supportAppCompat
     implementation depPaths.supportDesign

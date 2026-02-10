@@ -7,8 +7,6 @@ android {
     defaultConfig {
         minSdkVersion androidConfig.minSdkVersion
         targetSdkVersion androidConfig.targetSdkVersion
-        versionCode androidConfig.versionCode
-        versionName androidConfig.versionName
         testInstrumentationRunner androidConfig.testInstrumentationRunner
     }
 
@@ -18,7 +16,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    namespace 'io.tempo'
 }
+
 
 dependencies {
     implementation depPaths.kotlinStd

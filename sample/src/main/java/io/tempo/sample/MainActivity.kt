@@ -33,8 +33,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.tempo.Tempo
 import io.tempo.TempoEvent
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.item_tempo_event.view.*
+import io.tempo.sample.databinding.ActivityMainBinding
+import io.tempo.sample.databinding.ItemTempoEventBinding
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -43,14 +43,16 @@ import java.util.concurrent.TimeUnit
 class MainActivity : AppCompatActivity() {
     private val createSubscriptions = CompositeDisposable()
     private var eventsRvAdapter: EventsRvAdapter? = null
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        main_events_rv.layoutManager = LinearLayoutManager(this)
+        binding.mainEventsRv.layoutManager = LinearLayoutManager(this)
         eventsRvAdapter = EventsRvAdapter()
-        main_events_rv.adapter = eventsRvAdapter
+        binding.mainEventsRv.adapter = eventsRvAdapter
 
         Flowable.interval(0, 100, TimeUnit.MILLISECONDS)
                 .onBackpressureLatest()
@@ -61,8 +63,8 @@ class MainActivity : AppCompatActivity() {
                     val systemTimeFormatted = formatTimestamp(systemTime)
                     val tempoTimeFormatted = tempoTime?.let { formatTimestamp(it) } ?: "-"
 
-                    main_system_time_formatted_tv.text = systemTimeFormatted
-                    main_tempo_now_formatted_tv.text = tempoTimeFormatted
+                    binding.mainSystemTimeFormattedTv.text = systemTimeFormatted
+                    binding.mainTempoNowFormattedTv.text = tempoTimeFormatted
                 }
                 .also { createSubscriptions.add(it) }
 
@@ -82,7 +84,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         eventsRvAdapter = null
-        main_events_rv.adapter = null
+        binding.mainEventsRv.adapter = null
         createSubscriptions.clear()
         super.onDestroy()
     }
@@ -99,10 +101,10 @@ class MainActivity : AppCompatActivity() {
 }
 
 class EventsRvAdapter : RecyclerView.Adapter<EventsRvAdapter.VH>() {
-    class VH(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class VH(private val binding: ItemTempoEventBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(event: TempoEvent) {
-            itemView.item_tempo_time_tv.text = formatTimestamp(event.systemTime)
-            itemView.item_tempo_event_tv.text = formatTempoEvent(event)
+            binding.itemTempoTimeTv.text = formatTimestamp(event.systemTime)
+            binding.itemTempoEventTv.text = formatTempoEvent(event)
         }
     }
 
@@ -123,8 +125,8 @@ class EventsRvAdapter : RecyclerView.Adapter<EventsRvAdapter.VH>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(R.layout.item_tempo_event, parent, false)
-        return VH(view)
+        val binding = ItemTempoEventBinding.inflate(inflater, parent, false)
+        return VH(binding)
     }
 }
 

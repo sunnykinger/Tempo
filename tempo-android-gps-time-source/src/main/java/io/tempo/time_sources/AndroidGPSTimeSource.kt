@@ -48,17 +48,15 @@ class AndroidGPSTimeSource(
         return Flowable
             .create<GPSInfo>({ emitter ->
                 val listener = object : LocationListener {
-                    override fun onLocationChanged(location: Location?) {
-                        location?.let {
-                            if (!emitter.isCancelled) {
-                                emitter.onNext(GPSInfo(location.provider, location.time))
-                            }
+                    override fun onLocationChanged(location: Location) {
+                        if (!emitter.isCancelled) {
+                            emitter.onNext(GPSInfo(location.provider ?: "", location.time))
                         }
                     }
 
                     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
-                    override fun onProviderEnabled(provider: String?) {}
-                    override fun onProviderDisabled(provider: String?) {}
+                    override fun onProviderEnabled(provider: String) {}
+                    override fun onProviderDisabled(provider: String) {}
                 }
 
                 val hasPermission = ContextCompat.checkSelfPermission(
